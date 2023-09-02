@@ -97,29 +97,81 @@ func DropMatkul(kode string) (string, error) {
 }
 
 func AddMahasiswaMatkul(id, kode string) (string, error) {
+	var mahasiswa Tool = nil
+	var matkul Tool = nil
+
 	var successMsg string = ""
 	var errMsg error = nil
 
-	for _, mahasiswa := range DaftarMahasiswa {
-		if mahasiswa.Get() == id {
-			errMsg = errors.New(fmt.Sprintf("mahasiswa %v sudah ada di daftar mahasiswa", id))
+	for _, urutan := range DaftarMahasiswa {
+		if urutan.Get() == id {
+			mahasiswa = urutan
 			break
 		}
 	}
 
-	for _, matkul := range DaftarMatkul {
-		if matkul.Get() == kode {
-			errMsg = errors.New(fmt.Sprintf("matkul %v sudah ada di daftar mata kuliah", kode))
+	for _, urutan := range DaftarMatkul {
+		if urutan.Get() == kode {
+			matkul = urutan
 			break
 		}
+	}
+
+	if mahasiswa == nil {
+		return "", errors.New(fmt.Sprintf("mahasiswa %v tidak ada di daftar mahasiswa", id))
+	}
+
+	if matkul == nil {
+		return "", errors.New(fmt.Sprintf("matkul %v tidak ada di daftar mata kuliah", kode))
+	}
+
+	errMsg = matkul.Add(id)
+
+	if errMsg == nil {
+		mahasiswa.Add(kode)
+		successMsg = fmt.Sprintf("berhasil menambahkan matkul %v untuk mahasiswa %v", kode, id)
 	}
 
 	return successMsg, errMsg
 }
 
 func DropMahasiswaMatkul(id, kode string) (string, error) {
-	//TODO implement here
-	panic("fix me")
+	var mahasiswa Tool = nil
+	var matkul Tool = nil
+
+	var successMsg string = ""
+	var errMsg error = nil
+
+	for _, urutan := range DaftarMahasiswa {
+		if urutan.Get() == id {
+			mahasiswa = urutan
+			break
+		}
+	}
+
+	for _, urutan := range DaftarMatkul {
+		if urutan.Get() == kode {
+			matkul = urutan
+			break
+		}
+	}
+
+	if mahasiswa == nil {
+		return "", errors.New(fmt.Sprintf("mahasiswa %v tidak ada di daftar mahasiswa", id))
+	}
+
+	if matkul == nil {
+		return "", errors.New(fmt.Sprintf("matkul %v tidak ada di daftar mata kuliah", kode))
+	}
+
+	errMsg = matkul.Drop(id)
+
+	if errMsg == nil {
+		mahasiswa.Drop(kode)
+		successMsg = fmt.Sprintf("berhasil meghapus matkul %v dari mahasiswa %v", kode, id)
+	}
+
+	return successMsg, errMsg
 }
 
 func PrintMessage(successMsg string, errMsg error) string {
