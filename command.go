@@ -32,8 +32,26 @@ func AddMahasiswa(nama, id string) (string, error) {
 }
 
 func DropMahasiswa(id string) (string, error) {
-	//TODO implement here
-	panic("fix me")
+	var successMsg string = ""
+	var errMsg error = nil
+
+	for index, mahasiswa := range DaftarMahasiswa {
+		if mahasiswa.Get() == id {
+			if len(mahasiswa.GetArray()) == 0 {
+				successMsg = fmt.Sprintf("berhasil menghapus mahasiswa %v dari daftar mahasiswa", id)
+				DaftarMahasiswa = append(DaftarMahasiswa[:index], DaftarMahasiswa[index + 1:]...)
+			} else {
+				errMsg = errors.New(fmt.Sprintf("terdapat matkul yang diambil oleh mahasiswa %v", id))
+			}
+			break
+		}
+	}
+
+	if successMsg == "" && errMsg == nil {
+		errMsg = errors.New(fmt.Sprintf("mahasiswa %v tidak ada di daftar mahasiswa", id))
+	}
+
+	return successMsg, errMsg
 }
 
 func AddMatkul(nama, kode string, kapasitas int) (string, error) {
@@ -56,8 +74,26 @@ func AddMatkul(nama, kode string, kapasitas int) (string, error) {
 }
 
 func DropMatkul(kode string) (string, error) {
-	//TODO implement here
-	panic("fix me")
+	var successMsg string = ""
+	var errMsg error = nil
+
+	for index, matkul := range DaftarMatkul {
+		if matkul.Get() == kode {
+			if len(matkul.GetArray()) == 0 {
+				successMsg = fmt.Sprintf("berhasil menghapus matkul %v dari daftar mata kuliah", kode)
+				DaftarMatkul = append(DaftarMatkul[:index], DaftarMatkul[index + 1:]...)
+			} else {
+				errMsg = errors.New(fmt.Sprintf("terdapat mahasiswa yang mengambil matkul %v", kode))
+			}
+			break
+		}
+	}
+
+	if successMsg == "" && errMsg == nil {
+		errMsg = errors.New(fmt.Sprintf("matkul %v tidak ada di daftar mata kuliah", kode))
+	}
+
+	return successMsg, errMsg
 }
 
 func AddMahasiswaMatkul(id, kode string) (string, error) {
